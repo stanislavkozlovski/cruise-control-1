@@ -60,39 +60,40 @@ public class DefaultMetricSamplerPartitionAssignorTest {
         partitions.add(new PartitionInfo(TOPIC_PREFIX + i, j, NODE_0, nodes(), nodes()));
       }
     }
+//    Cluster cluster = new Cluster("cluster", Arrays.asList(nodes()), partitions, Collections.emptySet(), Collections.emptySet());
+//    Metadata metadata = new Metadata(METADATA_REFRESH_BACKOFF,
+//                                     METADATA_EXPIRY_MS,
+//                                     new LogContext(),
+//                                     new ClusterResourceListeners());
+//
+//    Map<String, Set<PartitionInfo>> topicToTopicPartitions = new HashMap<>(partitions.size());
+//    for (PartitionInfo tp : partitions) {
+//      topicToTopicPartitions.putIfAbsent(tp.topic(), new HashSet<>());
+//      topicToTopicPartitions.get(tp.topic()).add(tp);
+//    }
+//
+//    List<MetadataResponse.TopicMetadata> topicMetadata = new ArrayList<>(partitions.size());
+//    for (Map.Entry<String, Set<PartitionInfo>> entry : topicToTopicPartitions.entrySet()) {
+//      List<MetadataResponse.PartitionMetadata> partitionMetadata = new ArrayList<>(entry.getValue().size());
+//      for (PartitionInfo tp : entry.getValue()) {
+//        partitionMetadata.add(new MetadataResponse.PartitionMetadata(Errors.NONE, tp.partition(), NODE_0,
+//                                                                     Optional.of(RecordBatch.NO_PARTITION_LEADER_EPOCH),
+//                                                                     Arrays.asList(nodes()), Arrays.asList(nodes()),
+//                                                                     Collections.emptyList()));
+//      }
+//      topicMetadata.add(new MetadataResponse.TopicMetadata(Errors.NONE, entry.getKey(), false, partitionMetadata));
+//    }
+//
+//    MetadataResponse metadataResponse = KafkaCruiseControlUtils.prepareMetadataResponse(cluster.nodes(),
+//                                                                                        cluster.clusterResource().clusterId(),
+//                                                                                        MetadataResponse.NO_CONTROLLER_ID,
+//                                                                                        topicMetadata);
+//    metadata.update(KafkaCruiseControlUtils.REQUEST_VERSION_UPDATE, metadataResponse, 0);
+//
+//
     Cluster cluster = new Cluster("cluster", Arrays.asList(nodes()), partitions, Collections.emptySet(), Collections.emptySet());
-    Metadata metadata = new Metadata(METADATA_REFRESH_BACKOFF,
-                                     METADATA_EXPIRY_MS,
-                                     new LogContext(),
-                                     new ClusterResourceListeners());
-
-    Map<String, Set<PartitionInfo>> topicToTopicPartitions = new HashMap<>(partitions.size());
-    for (PartitionInfo tp : partitions) {
-      topicToTopicPartitions.putIfAbsent(tp.topic(), new HashSet<>());
-      topicToTopicPartitions.get(tp.topic()).add(tp);
-    }
-
-    List<MetadataResponse.TopicMetadata> topicMetadata = new ArrayList<>(partitions.size());
-    for (Map.Entry<String, Set<PartitionInfo>> entry : topicToTopicPartitions.entrySet()) {
-      List<MetadataResponse.PartitionMetadata> partitionMetadata = new ArrayList<>(entry.getValue().size());
-      for (PartitionInfo tp : entry.getValue()) {
-        partitionMetadata.add(new MetadataResponse.PartitionMetadata(Errors.NONE, tp.partition(), NODE_0,
-                                                                     Optional.of(RecordBatch.NO_PARTITION_LEADER_EPOCH),
-                                                                     Arrays.asList(nodes()), Arrays.asList(nodes()),
-                                                                     Collections.emptyList()));
-      }
-      topicMetadata.add(new MetadataResponse.TopicMetadata(Errors.NONE, entry.getKey(), false, partitionMetadata));
-    }
-
-    MetadataResponse metadataResponse = KafkaCruiseControlUtils.prepareMetadataResponse(cluster.nodes(),
-                                                                                        cluster.clusterResource().clusterId(),
-                                                                                        MetadataResponse.NO_CONTROLLER_ID,
-                                                                                        topicMetadata);
-    metadata.update(KafkaCruiseControlUtils.REQUEST_VERSION_UPDATE, metadataResponse, 0);
-
-
     MetricSamplerPartitionAssignor assignor = new DefaultMetricSamplerPartitionAssignor();
-    Set<TopicPartition> assignment = assignor.assignPartitions(metadata.fetch());
+    Set<TopicPartition> assignment = assignor.assignPartitions(cluster);
 
     int maxAssignedNumPartitionsForFetcher = -1;
     int minAssignedNumPartitionsForFetcher = Integer.MAX_VALUE;

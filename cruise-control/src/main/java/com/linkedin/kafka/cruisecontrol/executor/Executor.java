@@ -181,13 +181,14 @@ public class Executor {
     _adminClient = KafkaCruiseControlUtils.createAdminClient(KafkaCruiseControlUtils.parseAdminClientConfigs(config));
     _executionTaskManager = new ExecutionTaskManager(_adminClient, dropwizardMetricRegistry, time, config);
     _metadataClient = metadataClient != null ? metadataClient
-                                             : new MetadataClient(config,
-                                                                  new Metadata(METADATA_REFRESH_BACKOFF,
-                                                                               METADATA_EXPIRY_MS,
-                                                                               new LogContext(),
-                                                                               new ClusterResourceListeners()),
-                                                                  -1L,
-                                                                  time);
+                                             : new MetadataClient(config, -1L, time);
+//                                             : new MetadataClient(config,
+//                                                                  new Metadata(METADATA_REFRESH_BACKOFF,
+//                                                                               METADATA_EXPIRY_MS,
+//                                                                               new LogContext(),
+//                                                                               new ClusterResourceListeners()),
+//                                                                  -1L,
+//                                                                  time);
     _defaultExecutionProgressCheckIntervalMs = config.getLong(ExecutorConfig.EXECUTION_PROGRESS_CHECK_INTERVAL_MS_CONFIG);
     _leaderMovementTimeoutMs = config.getLong(ExecutorConfig.LEADER_MOVEMENT_TIMEOUT_MS_CONFIG);
     _requestedExecutionProgressCheckIntervalMs = null;

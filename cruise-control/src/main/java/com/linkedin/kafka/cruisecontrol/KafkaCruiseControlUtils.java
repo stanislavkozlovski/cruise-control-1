@@ -63,6 +63,7 @@ public class KafkaCruiseControlUtils {
   public static final String OPERATION_LOGGER = "operationLogger";
   // This will make MetaData.update() trigger a real metadata fetch.
   public static final int REQUEST_VERSION_UPDATE = -1;
+  public static final String ZK_CLIENT_NAME = "Cruise Control ZK Client";
 
   private KafkaCruiseControlUtils() {
 
@@ -312,7 +313,7 @@ public class KafkaCruiseControlUtils {
   public static KafkaZkClient createKafkaZkClient(String connectString, String metricGroup, String metricType, boolean zkSecurityEnabled) {
     String zooKeeperClientName = String.format("%s-%s", metricGroup, metricType);
     return KafkaZkClient.apply(connectString, zkSecurityEnabled, ZK_SESSION_TIMEOUT, ZK_CONNECTION_TIMEOUT, Integer.MAX_VALUE,
-                               new SystemTime(), metricGroup, metricType, Option.apply(zooKeeperClientName));
+                               new SystemTime(), metricGroup, metricType, Option.apply(ZK_CLIENT_NAME));
   }
 
   /**
